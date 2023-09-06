@@ -9,6 +9,12 @@ export default function SearchInput() {
   const navigate = useNavigate();
   const keyword = useSelector((state) => state.search.keyword);
   const dispatch = useDispatch();
+
+  function initFocus() {
+    dispatch(actions.setValue("keyword", ""));
+    dispatch(actions.fetchAutoComplete(""));
+  }
+
   function setKeyword(value) {
     if (value !== keyword) {
       dispatch(actions.setValue("keyword", value));
@@ -21,6 +27,7 @@ export default function SearchInput() {
   });
   function goToUser(value) {
     const user = autoCompletes.find((item) => item.name === value);
+
     if (user) {
       dispatch(userActions.setValue("user", user));
       navigate(`/user/${user.name}`);
@@ -32,6 +39,7 @@ export default function SearchInput() {
       value={keyword}
       onChange={setKeyword}
       onSelect={goToUser}
+      onFocus={initFocus}
       options={autoCompletes.map((item) => ({
         value: item.name,
         label: (

@@ -1,13 +1,29 @@
 import { Col, Row, Typography } from "antd";
 import Settings from "../component/Settings";
 import SearchInput from "./SearchInput";
+import History from "../../common/component/History";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { actions } from "../state";
+import useNeedLogin from "../../common/hook/useNeedLogin";
+import { actions as authActions } from "../../auth/state";
 
 function Search() {
+  useNeedLogin();
+  const history = useSelector((state) => state.search.history);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(actions.fetchAllHistory());
+  }, [dispatch]);
+
+  function logout() {
+    dispatch(authActions.fetchLogout());
+  }
   return (
     <>
       <Row justify={"end"} style={{ padding: 20 }}>
         <Col>
-          <Settings logout={() => {}} />
+          <Settings logout={logout} />
         </Col>
       </Row>
       <Row justify={"center"} style={{ marginTop: 100 }}>
@@ -18,8 +34,13 @@ function Search() {
         </Col>
       </Row>
       <Row justify={"center"} style={{ marginTop: 50 }}>
-        <Col span={12}>
+        <Col xs={20} md={16} lg={12}>
           <SearchInput />
+        </Col>
+      </Row>
+      <Row justify={"center"} style={{ marginTop: 50 }}>
+        <Col xs={20} md={16} lg={12}>
+          <History items={history} />
         </Col>
       </Row>
     </>
